@@ -94,7 +94,9 @@ def Address():
     return _adrs
 
 def Email(first_name, last_name):
-    _init = first_name[0]
+    _init = 'a'
+    if len(first_name) > 0:
+        first_name[0]
     _email = ''.join([_init, '.',last_name, "@email.com"])
     return _email
 
