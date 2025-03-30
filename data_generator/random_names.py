@@ -7,14 +7,11 @@ from os.path import dirname, join
 script_dir    = dirname(__file__)
 names_dir     = join(script_dir, 'Names')
 
-FirstNames    = join(names_dir, 'MaleFirstNames.txt')
-MiddleNames   = join(names_dir, 'MiddleNames.txt')
+MaleFirstNames    = join(names_dir, 'MaleFirstNames.txt')
+FemaleFirstNames    = join(names_dir, 'FemaleFirstNames.txt')
 LastNames     = join(names_dir, 'LastNames.txt')
 CountyNames   = join(names_dir, 'CountyNames.txt')
 PlaceNames    = join(names_dir, 'PlaceNames.txt')
-StateNames    = join(names_dir, 'StateNames.txt')
-CountryNames  = join(names_dir, 'CountryNames.txt')
-CompanyNames  = join(names_dir, 'CompanyNames.txt')
 StreetTypes   = join(names_dir, 'StreetTypes.txt')
 
 
@@ -64,20 +61,16 @@ def randomLine(filename):
     return line.strip('\n')
 
 
-def First():
-    return randomLine(FirstNames)
+def First(sex):
+    if (sex == 'F'):
+        return randomLine(FemaleFirstNames)
+
+    else:
+        return randomLine(MaleFirstNames)
 
 
 def Last():
     return randomLine(LastNames)
-
-
-def Middle():
-    return randomLine(MiddleNames)
-
-
-def States():
-    return randomLine(StateNames)
 
 
 def Places():
@@ -87,35 +80,9 @@ def Places():
 def County():
     return randomLine(CountyNames)
 
-
-def Company():
-    return randomLine(CompanyNames)
-
-
-def Country():
-    _Cc = randomLine(CountryNames)
-    _Cc = _Cc.split('|')
-    return _Cc[1]
-
-
-def CountryCode():
-    _Cc = randomLine(CountryNames)
-    _Cc = _Cc.split('|')
-    return _Cc[0]
-
-
-def StateCode():
-    return States().split(', ')[1]
-
 def StreetType():
     return randomLine(StreetTypes)
 
-
-def Full():
-    """
-    Returns a random First Name and Last Name combination
-    """
-    return ' '.join([First(), Last()])
 
 def Address():
     """
@@ -123,22 +90,7 @@ def Address():
     54F - Sauk, Middle, New Mexico, NM, 4292.
     """
     _door = str(Number(11, 99))
-    #_zip  = str(Number(1000, 9999))
-    #_adrs = ', '.join([Places(), County(), States(), _zip])
-    #_adrs = _door + UpperChars(1) + ' - ' + _adrs + '.'
     _adrs = ' '.join([_door, Places(), StreetType()])
-    return _adrs
-
-
-def ShortAddress():
-    """
-    Returns a Short Random address in the Format:
-    31 Outagamie, Wisconsin, WI, 8281
-    """
-    _door = str(Number(11, 99))
-    _zip  = str(Number(1000, 9999))
-    _adrs = ', '.join([County(), States(), _zip])
-    _adrs = _door + ' ' + _adrs
     return _adrs
 
 def Email(first_name, last_name):
@@ -146,7 +98,7 @@ def Email(first_name, last_name):
     _email = ''.join([_init, '.',last_name, "@email.com"])
     return _email
 
-def create_date():
+def create_date(year):
     """
     Generates a random date with numeric month and day.
     Format: 'MM/DD' (e.g., '03/15')
@@ -162,8 +114,12 @@ def create_date():
     
     # Pick a random day based on the selected month
     day = random.randint(1, days_in_month[month])
+
+    if(year < 1936):
+        year = 1935
     
-    return f"yyyy{month:02}{day:02}"  # Format as MM/DD
+
+    return f"{year}{month:02}{day:02}"  # Format as MM/DD
 
 
 def random_phone_number():
@@ -191,28 +147,20 @@ def generate_act_no():
     _number = random.randint(100000000, 999999999)
     return f"{_letter}{_number}"
 
-if __name__ == '__main__':
-    first_name = First()
+def generate_person(mrn, sex,state,year):
+    first_name = First(sex)
     last_name = Last()
     street_address = Address()
     _city = County()
     _county = County()
-    #state = same
-    #_zip = find take state and search file "[state]_zip.txt"
-    _birthday = create_date() # 
+    #_zip = find take state and search file "[state]_zip.txt"?
+    _birthday = create_date(year)  
     _phone = random_phone_number()
     email_address = Email(first_name, last_name)
     _ssn = generate_ssn()
     act_no = generate_act_no()
-    #act #s
-    
-    
 
-    print(first_name,last_name, 
-        '\nlives at', Address(),', STATE XXXXX',
-        '\nEmail:', Email(first_name, last_name), 
-        '\nBirthdate (yyyymmdd):', _birthday, 
-        '\nphone number: ', _phone,
-        '\nsocial: ', _ssn,
-        '\nact no: ', act_no
-        )
+    PID_Arr = [mrn,first_name, last_name, _birthday, sex, street_address, _city, _county, state, _phone, email_address, act_no, _ssn]
+
+    return PID_Arr
+
